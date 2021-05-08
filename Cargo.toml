@@ -1,0 +1,14 @@
+[package]
+name = "git-utils"
+version = "0.1.0"
+authors = ["Matthias Vogelgesang"]
+edition = "2018"
+
+[[bin]]
+name = "git-prune-branches"
+path = "src/prune/main.rs"
+
+[dependencies]
+anyhow = "1"
+termion = "1"
+tui = "0"
