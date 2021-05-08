@@ -11,7 +11,7 @@ pub fn branches() -> Result<Vec<String>> {
     }
 
     let output = std::str::from_utf8(&output.stdout)?.trim();
-    Ok(output.split("\n").map(String::from).collect())
+    Ok(output.split('\n').map(String::from).collect())
 }
 
 pub fn delete_branches(branches: &[&str]) -> Result<()> {
