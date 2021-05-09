@@ -1,4 +1,3 @@
-#[allow(dead_code)]
 mod event;
 mod git;
 mod list;
@@ -113,8 +112,7 @@ fn main() -> Result<()> {
                     }
                 }
                 _ => {}
-            },
-            _ => {}
+            }
         }
     }
 
