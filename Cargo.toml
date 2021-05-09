@@ -6,7 +6,7 @@ edition = "2018"
 
 [[bin]]
 name = "git-prune-branches"
-path = "src/prune/main.rs"
+path = "src/prune.rs"
 
 [dependencies]
 anyhow = "1"
