@@ -204,7 +204,6 @@ fn main() -> Result<()> {
         }
     }
 
-    println!("{}", termion::clear::All);
     pick(app.selected())?;
 
     Ok(())

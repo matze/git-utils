@@ -170,7 +170,6 @@ fn main() -> Result<()> {
         }
     }
 
-    println!("{}", termion::clear::All);
     delete_branches(&app.selected())?;
 
     Ok(())
