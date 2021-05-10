@@ -7,10 +7,13 @@ pub struct List<T> {
 
 impl<T> List<T> {
     pub fn new(items: Vec<T>) -> List<T> {
-        Self {
-            state: ListState::default(),
-            items,
+        let mut state = ListState::default();
+
+        if !items.is_empty() {
+            state.select(Some(0));
         }
+
+        Self { state, items }
     }
 
     pub fn next(&mut self) {
@@ -44,7 +47,7 @@ impl<T> List<T> {
     pub fn selected(&mut self) -> Option<&mut T> {
         match self.state.selected() {
             Some(index) => Some(&mut self.items[index]),
-            None => None
+            None => None,
         }
     }
 }
