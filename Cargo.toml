@@ -8,6 +8,10 @@ edition = "2018"
 name = "git-prune-branches"
 path = "src/prune.rs"
 
+[[bin]]
+name = "git-pick"
+path = "src/pick.rs"
+
 [dependencies]
 anyhow = "1"
 termion = "1"
