@@ -9,9 +9,9 @@ use termion::event::Key;
 use termion::raw::IntoRawMode;
 use tui::backend::TermionBackend;
 use tui::layout::{Constraint, Direction, Layout};
-use tui::style::{Modifier, Style};
+use tui::style::{Color, Modifier, Style};
 use tui::text::{Span, Spans};
-use tui::widgets::{Clear, List, ListItem};
+use tui::widgets::{Clear, List, ListItem, Paragraph};
 use tui::Terminal;
 
 struct Item {
@@ -28,7 +28,8 @@ impl Item {
     }
 
     fn to_list_item(&self) -> ListItem {
-        let select_char = if self.selected { "☠️  " } else { "   " };
+        let select_char = if self.selected { "[•] " } else { "[ ] " };
+
         ListItem::new(Spans::from(vec![
             Span::raw(select_char),
             Span::raw(&self.name),
@@ -77,8 +78,15 @@ fn main() -> Result<()> {
     loop {
         terminal.draw(|f| {
             let chunks = Layout::default()
-                .direction(Direction::Horizontal)
-                .constraints([Constraint::Percentage(100)].as_ref())
+                .direction(Direction::Vertical)
+                .constraints(
+                    [
+                        Constraint::Length(1),
+                        Constraint::Length(1),
+                        Constraint::Percentage(100),
+                    ]
+                    .as_ref(),
+                )
                 .split(f.size());
 
             let items = app
@@ -88,11 +96,18 @@ fn main() -> Result<()> {
                 .map(|item| item.to_list_item())
                 .collect::<Vec<_>>();
 
-            let list =
-                List::new(items).highlight_style(Style::default().add_modifier(Modifier::BOLD));
+            let list = List::new(items).highlight_style(
+                Style::default()
+                    .add_modifier(Modifier::BOLD)
+                    .fg(Color::LightMagenta),
+            );
 
             f.render_widget(Clear, f.size());
-            f.render_stateful_widget(list, chunks[0], &mut app.list.state);
+            f.render_widget(
+                Paragraph::new("Choose branches using <h>, <j>, <space> and select with <q>"),
+                chunks[0],
+            );
+            f.render_stateful_widget(list, chunks[2], &mut app.list.state);
         })?;
 
         match events.next()? {
@@ -112,7 +127,7 @@ fn main() -> Result<()> {
                     }
                 }
                 _ => {}
-            }
+            },
         }
     }
 
