@@ -1,10 +1,10 @@
 mod event;
-mod git;
 mod list;
 
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use event::{Event, Events};
 use std::io;
+use std::process::Command;
 use termion::event::Key;
 use termion::raw::IntoRawMode;
 use tui::backend::TermionBackend;
@@ -62,6 +62,45 @@ impl App {
             list: list::List::new(items),
         }
     }
+
+    fn selected(&self) -> Vec<&str> {
+        self.list
+            .items
+            .iter()
+            .filter(|item| item.selected)
+            .map(|item| item.name.as_str())
+            .collect()
+    }
+}
+
+fn branches() -> Result<Vec<String>> {
+    let output = Command::new("git")
+        .args(&["for-each-ref", "--format=%(refname:short)", "refs/heads/"])
+        .output()?;
+
+    if !output.status.success() {
+        return Err(anyhow!("Failed to list branches"));
+    }
+
+    let output = std::str::from_utf8(&output.stdout)?.trim();
+    Ok(output.split('\n').map(String::from).collect())
+}
+
+fn delete_branches(branches: &[&str]) -> Result<()> {
+    if branches.is_empty() {
+        return Ok(());
+    }
+
+    let mut args = vec!["branch", "-D"];
+    args.extend_from_slice(branches);
+
+    let output = Command::new("git").args(&args).output()?;
+
+    if !output.status.success() {
+        return Err(anyhow!("Failed to delete branches"));
+    }
+
+    Ok(())
 }
 
 fn main() -> Result<()> {
@@ -69,7 +108,7 @@ fn main() -> Result<()> {
     let backend = TermionBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
 
-    let branches = git::branches()?;
+    let branches = branches()?;
     let events = Events::new();
     let mut app = App::new(&branches.iter().map(|s| s as &str).collect::<Vec<_>>());
 
@@ -132,22 +171,7 @@ fn main() -> Result<()> {
     }
 
     println!("{}", termion::clear::All);
-
-    let selected = app
-        .list
-        .items
-        .iter()
-        .filter(|item| item.selected)
-        .collect::<Vec<_>>();
-
-    if !selected.is_empty() {
-        git::delete_branches(
-            &selected
-                .iter()
-                .map(|item| item.name.as_str())
-                .collect::<Vec<_>>(),
-        )?;
-    }
+    delete_branches(&app.selected())?;
 
     Ok(())
 }
