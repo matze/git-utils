@@ -20,7 +20,6 @@ impl Events {
     pub fn new() -> Events {
         let (tx, rx) = mpsc::channel();
         let input_handle = {
-            let tx = tx.clone();
             thread::spawn(move || {
                 let stdin = io::stdin();
                 for key in stdin.keys().flatten() {
