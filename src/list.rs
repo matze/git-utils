@@ -17,20 +17,20 @@ impl<T> List<T> {
     }
 
     pub fn next(&mut self) {
-        self.state.selected().map(|index| {
+        if let Some(index) = self.state.selected() {
             self.state.select(Some((index + 1) % self.items.len()));
-        });
+        };
     }
 
     pub fn previous(&mut self) {
-        self.state.selected().map(|index| {
+        if let Some(index) = self.state.selected() {
             let index = if index == 0 {
                 self.items.len() - 1
             } else {
                 index - 1
             };
             self.state.select(Some(index));
-        });
+        };
     }
 
     pub fn selected(&mut self) -> Option<&mut T> {
