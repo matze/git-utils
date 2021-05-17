@@ -17,37 +17,25 @@ impl<T> List<T> {
     }
 
     pub fn next(&mut self) {
-        let index = match self.state.selected() {
-            Some(i) => {
-                if i >= self.items.len() - 1 {
-                    0
-                } else {
-                    i + 1
-                }
-            }
-            None => 0,
-        };
-        self.state.select(Some(index));
+        self.state.selected().map(|index| {
+            self.state.select(Some((index + 1) % self.items.len()));
+        });
     }
 
     pub fn previous(&mut self) {
-        let index = match self.state.selected() {
-            Some(i) => {
-                if i == 0 {
-                    self.items.len() - 1
-                } else {
-                    i - 1
-                }
-            }
-            None => 0,
-        };
-        self.state.select(Some(index));
+        self.state.selected().map(|index| {
+            let index = if index == 0 {
+                self.items.len() - 1
+            } else {
+                index - 1
+            };
+            self.state.select(Some(index));
+        });
     }
 
     pub fn selected(&mut self) -> Option<&mut T> {
-        match self.state.selected() {
-            Some(index) => Some(&mut self.items[index]),
-            None => None,
-        }
+        self.state
+            .selected()
+            .map(move |index| &mut self.items[index])
     }
 }
