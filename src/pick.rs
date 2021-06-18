@@ -197,6 +197,7 @@ fn main() -> Result<()> {
                 Key::Char(' ') => {
                     if let Some(item) = app.list.selected() {
                         item.toggle();
+                        app.list.next();
                     }
                 }
                 _ => {}
