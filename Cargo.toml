@@ -15,4 +15,4 @@ path = "src/pick.rs"
 [dependencies]
 anyhow = "1"
 termion = "1"
-tui = "0"
+ratatui = { version = "0", default-features = false, features = ["termion"] }

@@ -3,17 +3,17 @@ mod list;
 
 use anyhow::{anyhow, Result};
 use event::{Event, Events};
+use ratatui::backend::TermionBackend;
+use ratatui::layout::{Constraint, Direction, Layout};
+use ratatui::style::{Color, Modifier, Style};
+use ratatui::text::{Line, Span};
+use ratatui::widgets::{Clear, List, ListItem, Paragraph};
+use ratatui::Terminal;
 use std::env;
 use std::io;
 use std::process::Command;
 use termion::event::Key;
 use termion::raw::IntoRawMode;
-use tui::backend::TermionBackend;
-use tui::layout::{Constraint, Direction, Layout};
-use tui::style::{Color, Modifier, Style};
-use tui::text::{Span, Spans};
-use tui::widgets::{Clear, List, ListItem, Paragraph};
-use tui::Terminal;
 
 #[derive(Debug)]
 struct Commit {
@@ -48,7 +48,7 @@ impl Item {
     fn to_list_item(&self) -> ListItem {
         let select_char = if self.selected { "[•] " } else { "[ ] " };
 
-        ListItem::new(Spans::from(vec![
+        ListItem::new(Line::from(vec![
             Span::raw(select_char),
             Span::raw(&self.commit.hash),
             Span::raw(": "),
