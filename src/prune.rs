@@ -49,13 +49,7 @@ impl App {
     fn new(branches: &[&str]) -> App {
         let items = branches
             .iter()
-            .filter_map(|b| {
-                if b != &"master" {
-                    Some(Item::new(b))
-                } else {
-                    None
-                }
-            })
+            .filter_map(|b| (b != &"master" && b != &"main").then_some(Item::new(b)))
             .collect::<Vec<_>>();
 
         App {
