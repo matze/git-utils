@@ -84,7 +84,7 @@ impl App {
 
 fn is_branch(name: &str) -> Result<bool> {
     Ok(Command::new("git")
-        .args(&[
+        .args([
             "show-ref",
             "--verify",
             "--quiet",
@@ -97,7 +97,7 @@ fn is_branch(name: &str) -> Result<bool> {
 
 fn commits(branch: &str) -> Result<Vec<Commit>> {
     let output = Command::new("git")
-        .args(&["log", branch, "^HEAD", "--no-merges", "--oneline"])
+        .args(["log", branch, "^HEAD", "--no-merges", "--oneline"])
         .output()?;
 
     if !output.status.success() {
@@ -111,7 +111,7 @@ fn commits(branch: &str) -> Result<Vec<Commit>> {
 fn pick(commits: Vec<Commit>) -> Result<()> {
     for commit in commits.into_iter().rev() {
         let output = Command::new("git")
-            .args(&["cherry-pick", &commit.hash])
+            .args(["cherry-pick", &commit.hash])
             .output()?;
 
         if !output.status.success() {

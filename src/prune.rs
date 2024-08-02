@@ -75,7 +75,7 @@ impl App {
 
 fn branches() -> Result<Vec<String>> {
     let output = Command::new("git")
-        .args(&["for-each-ref", "--format=%(refname:short)", "refs/heads/"])
+        .args(["for-each-ref", "--format=%(refname:short)", "refs/heads/"])
         .output()?;
 
     if !output.status.success() {
